@@ -1,0 +1,7 @@
+{
+  "name": "ReSkateSkinSync",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com",
+  "description": "Memory-optimized real-time clothing synchronization plugin for ReSkate public servers.",
+  "dependencies": []
+}

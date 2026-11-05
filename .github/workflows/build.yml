@@ -1,0 +1,16 @@
+name: Cloud Build Engine
+on: [push]
+jobs:
+  compile-dll:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Binary
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+      - name: Create Upload Asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: ReSkateSkinSync-Plugin
+          path: build/Release/ReSkateSkinSync.dll
