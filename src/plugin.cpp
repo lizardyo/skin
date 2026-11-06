@@ -10,10 +10,10 @@
 // Direct text path string definitions read from public ReSkate server packets
 struct RemotePlayerAppearance {
     uint32_t playerID;
-    char playerProfileName[32];
-    char equippedTopShirtName[64];    // Reads: "Own_Chrome_Hearts_HoodieZip..."
-    char equippedBottomPantsName[64]; // Reads: "Own_111_Baggy_Camo_Shorts..."
-    char equippedShoesName[64];       // Reads: "Own_Nike_Dunk_Low_Pro..."
+    const char* playerProfileName;
+    const char* equippedTopShirtName;    // Reads: "Own_Chrome_Hearts_HoodieZip..."
+    const char* equippedBottomPantsName; // Reads: "Own_111_Baggy_Camo_Shorts..."
+    const char* equippedShoesName;       // Reads: "Own_Nike_Dunk_Low_Pro..."
     void* nativeVisualInstancePointer;
 };
 
@@ -46,8 +46,6 @@ void StreamAssetDownloadWorkerPipeline() {
             std::string localTargetFile = CACHE_ROOT_DIR + activeAssetID + ".cas";
 
             if (!std::filesystem::exists(localTargetFile)) {
-                // Background isolated file streaming execution block
-                // Only pulling down the active item down to localTargetFile...
                 std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Non-blocking throttle
             }
 
@@ -85,7 +83,7 @@ extern "C" __declspec(dllexport) void OnUpdateTick(void* clientPlayerManagerStru
 
     for (int i = 0; i < connectedPeerCount; i++) {
         RemotePlayerAppearance& targetPeer = serverLobbyPlayers[i];
-        if (strlen(targetPeer.equippedTopShirtName) == 0) continue;
+        if (!targetPeer.equippedTopShirtName || strlen(targetPeer.equippedTopShirtName) == 0) continue;
 
         std::string currentTopID = std::string(targetPeer.equippedTopShirtName);
         std::lock_guard<std::mutex> lock(g_StreamMutex);
