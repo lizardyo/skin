@@ -1,11 +1,24 @@
 #include <iostream>
+#include <cstring>
 #include <unordered_map>
 #include <string>
 #include <thread>
 #include <mutex>
 #include <queue>
 #include <filesystem>
+#ifdef _WIN32
 #include <windows.h>
+#else
+using HMODULE = void*;
+using DWORD = unsigned long;
+using LPVOID = void*;
+using BOOL = int;
+#define APIENTRY
+#define DLL_PROCESS_ATTACH 1
+#define DLL_PROCESS_DETACH 0
+#define TRUE 1
+#define __declspec(x)
+#endif
 
 // Direct text path string definitions read from public ReSkate server packets
 struct RemotePlayerAppearance {
@@ -83,7 +96,7 @@ extern "C" __declspec(dllexport) void OnUpdateTick(void* clientPlayerManagerStru
 
     for (int i = 0; i < connectedPeerCount; i++) {
         RemotePlayerAppearance& targetPeer = serverLobbyPlayers[i];
-        if (!targetPeer.equippedTopShirtName || strlen(targetPeer.equippedTopShirtName) == 0) continue;
+        if (!targetPeer.equippedTopShirtName || std::strlen(targetPeer.equippedTopShirtName) == 0) continue;
 
         std::string currentTopID = std::string(targetPeer.equippedTopShirtName);
         std::lock_guard<std::mutex> lock(g_StreamMutex);
